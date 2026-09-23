@@ -1,0 +1,22 @@
+#failed due to blocking and long time process
+import os
+from icrawler.builtin import BingImageCrawler
+
+def download_images(keyword, max_num=100, save_dir='dataset'):
+    target_path = os.path.join(save_dir, keyword.split()[0])
+    os.makedirs(target_path, exist_ok=True)
+    
+    crawler = BingImageCrawler(
+        downloader_threads=4,
+        storage={'root_dir': target_path}
+    )
+    
+    crawler.crawl(
+        keyword=keyword,
+        max_num=max_num,
+        min_size=(200, 200)
+    )
+
+if __name__ == '__main__':
+    download_images('cat', 100)
+    download_images('dog', 100)
