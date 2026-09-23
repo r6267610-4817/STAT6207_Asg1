@@ -1,10 +1,10 @@
-Encoding Model,Feature Dimension,Distance Metric,KNN Accuracy (%)
-resnet18,512,L1 (Manhattan),100.0
-resnet18,512,L2 (Euclidean),99.1
-resnet18,512,Cosine,99.1
-vgg16,4096,L1 (Manhattan),99.1
-vgg16,4096,L2 (Euclidean),96.4
-vgg16,4096,Cosine,98.2
-efficientnet_b0,1280,L1 (Manhattan),98.2
-efficientnet_b0,1280,L2 (Euclidean),98.2
-efficientnet_b0,1280,Cosine,97.3
+Encoding Model,Feature Dimension,Distance Metric,Mean Accuracy (%),Std Dev (%)
+resnet18,512,L1 (Manhattan),97.0,2.45
+resnet18,512,L2 (Euclidean),97.5,1.58
+resnet18,512,Cosine,98.5,1.22
+vgg16,4096,L1 (Manhattan),97.5,1.58
+vgg16,4096,L2 (Euclidean),97.0,3.67
+vgg16,4096,Cosine,97.5,1.58
+efficientnet_b0,1280,L1 (Manhattan),96.0,2.55
+efficientnet_b0,1280,L2 (Euclidean),97.5,1.58
+efficientnet_b0,1280,Cosine,96.5,1.22

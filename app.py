@@ -280,32 +280,48 @@ with tab2:
 # TAB 3: Advance Performance Comparison Matrix
 # ---------------------------------------------------------
 with tab3:
-    st.header("Advance Tasks: 3 Models × 3 Metrics Performance Matrix")
+    st.header("Advance Tasks: 3 Models × 3 Metrics Performance Matrix (5-Fold CV)")
 
     if os.path.exists('advance_results.csv'):
         df_res = pd.read_csv('advance_results.csv')
 
-        st.subheader("📋 Detailed Accuracy Breakdown")
-        st.dataframe(df_res, use_container_width=True)
+        st.subheader("📋 Detailed Accuracy Breakdown (Mean ± Std Dev)")
+        df_display = df_res.rename(columns={
+            'Mean Accuracy (%)': 'Mean Acc (%)',
+            'Std Dev (%)': 'Std Dev (%)'
+        })
+        st.dataframe(df_display, use_container_width=True)
 
         pivot_df = df_res.pivot(
             index='Encoding Model',
             columns='Distance Metric',
-            values='KNN Accuracy (%)'
+            values='Mean Accuracy (%)'
         )
-        st.subheader("📈 Accuracy Comparison Matrix (%)")
+        pivot_std = df_res.pivot(
+            index='Encoding Model',
+            columns='Distance Metric',
+            values='Std Dev (%)'
+        )
+
+        st.subheader("📈 Mean Accuracy Comparison Matrix (%)")
         st.table(pivot_df)
 
-        st.subheader("📊 Performance Visual Comparison")
-        st.bar_chart(pivot_df)
+        st.subheader("📊 Performance Visual Comparison (with Error Bars)")
+        import matplotlib.pyplot as plt
+        
+        fig, ax = plt.subplots(figsize=(10, 5))
+        pivot_df.plot(kind='bar', yerr=pivot_std, capsize=5, ax=ax, colormap='viridis')
+        ax.set_ylabel('Mean KNN Accuracy (%)')
+        ax.set_ylim(80, 100)
+        ax.grid(axis='y', linestyle='--', alpha=0.7)
+        ax.legend(title='Distance Metric', bbox_to_anchor=(1.05, 1), loc='upper left')
+        st.pyplot(fig)
 
         st.subheader("🔍 Key Findings")
         st.markdown("""
-        - **EfficientNet-B0** achieves consistent **97.5%** accuracy across all metrics.
-        - **VGG16** performs best with **L1 (Manhattan)** and **Cosine** (97.5%),
-          but drops to **95.0%** with **L2 (Euclidean)** — consistent with the
-          curse of dimensionality in high-dimensional feature spaces.
-        - **Cosine** distance is the most universally robust metric across all encoders.
+        - **ResNet18 + Cosine** achieves the highest mean accuracy (**98.5%**) with the lowest variance (Std 1.22%), demonstrating robust directional alignment.
+        - **VGG16 + L2 (Euclidean)** shows the highest variance (**Std 3.67%**). In 4096-dimensional space, L2 distance suffers from the **curse of dimensionality**, where squaring coordinate differences amplifies noise in non-informative dimensions.
+        - **EfficientNet-B0** is consistently average (96.0% ~ 97.5%), suggesting its compound-scaled features are less discriminative for this specific binary task compared to ResNet18's residual features.
         """)
     else:
         st.warning(
